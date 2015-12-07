@@ -14,6 +14,7 @@
  */
 package com.amazonaws.samples;
 
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -40,13 +41,30 @@ import java.util.Map;
  * users) before you try to run this sample.
  */
 public class Distribution {
-    private static AmazonS3 s3 = new AmazonS3Client();
+//    private static AmazonS3 s3 = new AmazonS3Client();
+private static String secretKey = "5snS4NCdqIBweqVVVXWrB4jKP5j05B1RcIpJfUB6";
+    private static String accessKey = "AKIAIFIC2HMBMX2AMNXQ";
+    private static AmazonS3 s3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
     private static Region usWest2;
-    private static String VNBucket = "";
+    private static String VNBucket = "vndist";
 
     static {
         usWest2 = Region.getRegion(Regions.US_WEST_2);
         s3.setRegion(usWest2);
+    }
+
+    public static void main(String[] args)  throws IOException  {
+        File file = File.createTempFile("aws-java-sdk-", ".txt");
+        file.deleteOnExit();
+
+        Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+        writer.write("abcdefghijklmnopqrstuvwxyz\n");
+        writer.write("01234567890112345678901234\n");
+        writer.write("!@#$%^&*()-=[]{};':',.<>/?\n");
+        writer.write("01234567890112345678901234\n");
+        writer.write("abcdefghijklmnopqrstuvwxyz\n");
+        writer.close();
+        upload(file, "1", "2", "3");
     }
 
 //    public static void main(String[] args) throws IOException {
